@@ -18,6 +18,24 @@
             android:name="com.duapps.f.lib.client.stub.DaemonService$InnerService"
             android:process="@string/engine_process_name" />
 
+        <activity
+            android:name="com.duapps.f.lib.client.stub.ShortcutHandleActivity"
+            android:exported="true"
+            android:process="@string/engine_process_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name=".client.stub.StubPendingActivity"
+            android:process="@string/engine_process_name" />
+
+        <service
+            android:name=".client.stub.StubPendingService"
+            android:process="@string/engine_process_name" />
+
+        <receiver
+            android:name=".client.stub.StubPendingReceiver"
+            android:process="@string/engine_process_name" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
