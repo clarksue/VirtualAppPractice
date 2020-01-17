@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.os.ConditionVariable;
 import android.os.IBinder;
 import android.os.Looper;
@@ -18,6 +19,8 @@ import com.duapps.f.lib.client.env.Constants;
 import com.duapps.f.lib.client.env.VirtualRuntime;
 import com.duapps.f.lib.client.fixer.ContextFixer;
 import com.duapps.f.lib.client.hook.delegate.ComponentDelegate;
+import com.duapps.f.lib.client.hook.delegate.PhoneInfoDelegate;
+import com.duapps.f.lib.client.hook.delegate.TaskDescriptionDelegate;
 import com.duapps.f.lib.client.ipc.ServiceManagerNative;
 import com.duapps.f.lib.client.ipc.VActivityManager;
 import com.duapps.f.lib.client.ipc.VPackageManager;
@@ -25,12 +28,16 @@ import com.duapps.f.lib.client.stub.VASettings;
 import com.duapps.f.lib.helper.ipcbus.IPCBus;
 import com.duapps.f.lib.helper.ipcbus.IPCSingleton;
 import com.duapps.f.lib.helper.ipcbus.IServerCache;
+import com.duapps.f.lib.remote.InstallResult;
 import com.duapps.f.lib.remote.InstalledAppInfo;
 import com.duapps.f.lib.server.ServiceCache;
 import com.duapps.f.lib.server.interfaces.IAppManager;
+import com.duapps.f.lib.server.interfaces.IAppRequestListener;
 
+import java.io.IOException;
 import java.util.List;
 
+import dalvik.system.DexFile;
 import mirror.android.app.ActivityThread;
 
 public class VirtualCore {
@@ -66,7 +73,8 @@ public class VirtualCore {
     private int systemPid;
     private ConditionVariable initLock = new ConditionVariable();
     private ComponentDelegate componentDelegate;
-
+    private PhoneInfoDelegate phoneInfoDelegate;
+    private TaskDescriptionDelegate taskDescriptionDelegate;
 
     private VirtualCore() {
     }
@@ -304,7 +312,132 @@ public class VirtualCore {
         }
     }
 
+    public InstallResult installPackage(String apkPath, int flags) {
+        try {
+            return getService().installPackage(apkPath, flags);
+        } catch (RemoteException e) {
+            return VirtualRuntime.crash(e);
+        }
+    }
+
+    public void setPhoneInfoDelegate(PhoneInfoDelegate phoneInfoDelegate) {
+        this.phoneInfoDelegate = phoneInfoDelegate;
+    }
+
+    public TaskDescriptionDelegate getTaskDescriptionDelegate() {
+        return taskDescriptionDelegate;
+    }
+
+    public void setTaskDescriptionDelegate(TaskDescriptionDelegate taskDescriptionDelegate) {
+        this.taskDescriptionDelegate = taskDescriptionDelegate;
+    }
+
+    public void setAppRequestListener(final AppRequestListener listener) {
+        IAppRequestListener inner = new IAppRequestListener.Stub() {
+            @Override
+            public void onRequestInstall(final String path) {
+                VirtualRuntime.getUIHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onRequestInstall(path);
+                    }
+                });
+            }
+
+            @Override
+            public void onRequestUninstall(final String pkg) {
+                VirtualRuntime.getUIHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onRequestUninstall(pkg);
+                    }
+                });
+            }
+        };
+        try {
+            getService().setAppRequestListener(inner);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addVisibleOutsidePackage(String pkg) {
+        try {
+            getService().addVisibleOutsidePackage(pkg);
+        } catch (RemoteException e) {
+            VirtualRuntime.crash(e);
+        }
+    }
+
+    public void removeVisibleOutsidePackage(String pkg) {
+        try {
+            getService().removeVisibleOutsidePackage(pkg);
+        } catch (RemoteException e) {
+            VirtualRuntime.crash(e);
+        }
+    }
+
+    public void initialize(VirtualInitializer initializer) {
+        if (initializer == null) {
+            throw new IllegalStateException("Initializer = NULL");
+        }
+        switch (processType) {
+            case Main:
+                initializer.onMainProcess();
+                break;
+            case VAppClient:
+                initializer.onVirtualProcess();
+                break;
+            case Server:
+                initializer.onServerProcess();
+                break;
+            case CHILD:
+                initializer.onChildProcess();
+                break;
+        }
+    }
+
+    /**
+     * Optimize the Dalvik-Cache for the specified package.
+     *
+     * @param pkg package name
+     * @throws IOException
+     */
+    @Deprecated
+    public void preOpt(String pkg) throws IOException {
+        InstalledAppInfo info = getInstalledAppInfo(pkg, 0);
+        if (info != null && !info.dependSystem) {
+            DexFile.loadDex(info.apkPath, info.getOdexFile().getPath(), 0).close();
+        }
+    }
+
     public static PackageManager getPM() {
         return get().getPackageManager();
+    }
+
+    public interface AppRequestListener {
+        void onRequestInstall(String path);
+
+        void onRequestUninstall(String pkg);
+    }
+
+    public interface OnEmitShortcutListener {
+        Bitmap getIcon(Bitmap originIcon);
+
+        String getName(String originName);
+    }
+
+    public static abstract class VirtualInitializer {
+        public void onMainProcess() {
+        }
+
+        public void onVirtualProcess() {
+        }
+
+        public void onServerProcess() {
+        }
+
+        public void onChildProcess() {
+        }
     }
 }
