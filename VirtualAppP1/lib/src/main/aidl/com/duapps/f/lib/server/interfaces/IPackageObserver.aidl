@@ -1,8 +1,6 @@
 // IPackageObserver.aidl
 package com.duapps.f.lib.server.interfaces;
 
-// Declare any non-default types here with import statements
-
 interface IPackageObserver {
     void onPackageInstalled(in String packageName);
     void onPackageUninstalled(in String packageName);

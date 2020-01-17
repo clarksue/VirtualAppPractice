@@ -1,10 +1,13 @@
 package com.duapps.f.lib.client.hook.base;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import com.duapps.f.lib.client.VClientImpl;
 import com.duapps.f.lib.client.core.VirtualCore;
+import com.duapps.f.lib.client.ipc.VirtualLocationManager;
+import com.duapps.f.lib.helper.utils.ComponentUtils;
 import com.duapps.f.lib.os.VUserHandle;
 import com.duapps.f.lib.remote.VDeviceInfo;
 
@@ -67,6 +70,16 @@ public abstract class MethodProxy {
 
     protected static VDeviceInfo getDeviceInfo() {
         return VClientImpl.get().getDeviceInfo();
+    }
+
+    protected static boolean isFakeLocationEnable() {
+        return VirtualLocationManager.get().getMode(VUserHandle.myUserId(), VClientImpl.get().getCurrentPackage()) != 0;
+    }
+
+    public static boolean isVisiblePackage(ApplicationInfo info) {
+        return getHostPkg().equals(info.packageName)
+                || ComponentUtils.isSystemApp(info)
+                || VirtualCore.get().isOutsidePackageVisible(info.packageName);
     }
 
     public abstract String getMethodName();

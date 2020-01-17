@@ -1,5 +1,9 @@
 package com.duapps.f.lib;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+
+import com.duapps.f.lib.client.core.InstallStrategy;
 import com.duapps.f.lib.client.core.VirtualCore;
 
 import java.util.Arrays;
@@ -39,5 +43,45 @@ public class GmsSupport {
 
     public static boolean isGoogleFrameworkInstalled() {
         return VirtualCore.get().isAppInstalled("com.google.android.gms");
+    }
+
+    public static boolean isOutsideGoogleFrameworkExist() {
+        return VirtualCore.get().isOutsideInstalled("com.google.android.gms");
+    }
+
+    private static void installPackages(List<String> list, int userId) {
+        VirtualCore core = VirtualCore.get();
+        for (String packageName : list) {
+            if (core.isAppInstalledAsUser(userId, packageName)) {
+                continue;
+            }
+            ApplicationInfo info = null;
+            try {
+                info = VirtualCore.get().getUnHookPackageManager().getApplicationInfo(packageName, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                // Ignore
+            }
+            if (info == null || info.sourceDir == null) {
+                continue;
+            }
+            if (userId == 0) {
+                core.installPackage(info.sourceDir, InstallStrategy.DEPEND_SYSTEM_IF_EXIST);
+            } else {
+                core.installPackageAsUser(userId, packageName);
+            }
+        }
+    }
+
+    public static void installGApps(int userId) {
+        installPackages(GOOGLE_SERVICE, userId);
+        installPackages(GOOGLE_APP, userId);
+    }
+
+    public static void installGoogleService(int userId) {
+        installPackages(GOOGLE_SERVICE, userId);
+    }
+
+    public static void installGoogleApp(int userId) {
+        installPackages(GOOGLE_APP, userId);
     }
 }

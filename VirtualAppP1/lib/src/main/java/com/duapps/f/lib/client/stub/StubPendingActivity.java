@@ -7,6 +7,10 @@ import android.os.Bundle;
 import com.duapps.f.lib.client.ipc.VActivityManager;
 import com.duapps.f.lib.remote.StubActivityRecord;
 
+/**
+ * @author Lody
+ */
+
 public class StubPendingActivity extends Activity {
 
     @Override

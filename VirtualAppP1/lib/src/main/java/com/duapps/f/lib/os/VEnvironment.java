@@ -9,6 +9,10 @@ import com.duapps.f.lib.helper.utils.VLog;
 
 import java.io.File;
 
+/**
+ * @author Lody
+ */
+
 public class VEnvironment {
 
     private static final String TAG = VEnvironment.class.getSimpleName();

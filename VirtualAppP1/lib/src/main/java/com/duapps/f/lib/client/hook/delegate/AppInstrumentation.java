@@ -3,20 +3,29 @@ package com.duapps.f.lib.client.hook.delegate;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
+import android.os.RemoteException;
 
+import com.duapps.f.lib.client.VClientImpl;
 import com.duapps.f.lib.client.core.VirtualCore;
+import com.duapps.f.lib.client.fixer.ActivityFixer;
 import com.duapps.f.lib.client.fixer.ContextFixer;
 import com.duapps.f.lib.client.interfaces.IInjector;
 import com.duapps.f.lib.client.ipc.ActivityClientRecord;
 import com.duapps.f.lib.client.ipc.VActivityManager;
 import com.duapps.f.lib.helper.compat.BundleCompat;
+import com.duapps.f.lib.os.VUserHandle;
+import com.duapps.f.lib.server.interfaces.IUiCallback;
 
 import mirror.android.app.ActivityThread;
 
+/**
+ * @author Lody
+ */
 public final class AppInstrumentation extends InstrumentationDelegate implements IInjector {
 
     private static final String TAG = AppInstrumentation.class.getSimpleName();
@@ -70,7 +79,7 @@ public final class AppInstrumentation extends InstrumentationDelegate implements
             r.activity = activity;
         }
         ContextFixer.fixContext(activity);
-//        ActivityFixer.fixActivity(activity);
+        ActivityFixer.fixActivity(activity);
         ActivityInfo info = null;
         if (r != null) {
             info = r.info;
@@ -99,24 +108,24 @@ public final class AppInstrumentation extends InstrumentationDelegate implements
     @Override
     public void callActivityOnResume(Activity activity) {
         VirtualCore.get().getComponentDelegate().beforeActivityResume(activity);
-//        VActivityManager.get().onActivityResumed(activity);
-//        super.callActivityOnResume(activity);
-//        VirtualCore.get().getComponentDelegate().afterActivityResume(activity);
-//        Intent intent = activity.getIntent();
-//        if (intent != null) {
-//            Bundle bundle = intent.getBundleExtra("_VA_|_sender_");
-//            if (bundle != null) {
-//                IBinder callbackToken = BundleCompat.getBinder(bundle, "_VA_|_ui_callback_");
-//                IUiCallback callback = IUiCallback.Stub.asInterface(callbackToken);
-//                if (callback != null) {
-//                    try {
-//                        callback.onAppOpened(VClientImpl.get().getCurrentPackage(), VUserHandle.myUserId());
-//                    } catch (RemoteException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
+        VActivityManager.get().onActivityResumed(activity);
+        super.callActivityOnResume(activity);
+        VirtualCore.get().getComponentDelegate().afterActivityResume(activity);
+        Intent intent = activity.getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getBundleExtra("_VA_|_sender_");
+            if (bundle != null) {
+                IBinder callbackToken = BundleCompat.getBinder(bundle, "_VA_|_ui_callback_");
+                IUiCallback callback = IUiCallback.Stub.asInterface(callbackToken);
+                if (callback != null) {
+                    try {
+                        callback.onAppOpened(VClientImpl.get().getCurrentPackage(), VUserHandle.myUserId());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 
@@ -139,4 +148,5 @@ public final class AppInstrumentation extends InstrumentationDelegate implements
     public void callApplicationOnCreate(Application app) {
         super.callApplicationOnCreate(app);
     }
+
 }

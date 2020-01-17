@@ -5,6 +5,9 @@ import android.os.IBinder;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+/**
+ * @author Lody
+ */
 public class IPCInvocationBridge implements InvocationHandler {
 
     private ServerInterface serverInterface;
@@ -16,7 +19,7 @@ public class IPCInvocationBridge implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         IPCMethod ipcMethod = serverInterface.getIPCMethod(method);
         if (ipcMethod == null) {
             throw new IllegalStateException("Can not found the ipc method : " + method.getDeclaringClass().getName() + "@" +  method.getName());

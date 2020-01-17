@@ -346,7 +346,7 @@ public final class VUserHandle implements Parcelable {
     public static VUserHandle myUserHandle() {
         return new VUserHandle(myUserId());
     }
-
+    
     /**
      * Returns true if this VUserHandle refers to the owner user; false otherwise.
      * @return true if this VUserHandle refers to the owner user; false otherwise.
@@ -368,7 +368,7 @@ public final class VUserHandle implements Parcelable {
     public String toString() {
         return "VUserHandle{" + mHandle + "}";
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         try {
@@ -380,7 +380,7 @@ public final class VUserHandle implements Parcelable {
         }
         return false;
     }
-
+    
     @Override
     public int hashCode() {
         return mHandle;

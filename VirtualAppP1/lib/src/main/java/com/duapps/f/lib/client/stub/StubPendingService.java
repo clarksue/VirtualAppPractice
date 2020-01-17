@@ -1,21 +1,19 @@
 package com.duapps.f.lib.client.stub;
 
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.UserHandle;
 
 import com.duapps.f.lib.client.ipc.VActivityManager;
+
+
+/**
+ * @author Lody
+ */
 
 public class StubPendingService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public synchronized ComponentName startForegroundServiceAsUser(Intent service, UserHandle user) {
         return null;
     }
 

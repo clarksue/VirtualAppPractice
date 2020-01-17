@@ -1,9 +1,52 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.duapps.f.lib.helper.collection;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * ArrayMap is a generic key->value mapping data structure that is
+ * designed to be more memory efficient than a traditional {@link java.util.HashMap},
+ * this implementation is a version of the platform's
+ * {@link android.util.ArrayMap} that can be used on older versions of the platform.
+ * It keeps its mappings in an array data structure -- an integer array of hash
+ * codes for each item, and an Object array of the key/value pairs.  This allows it to
+ * avoid having to create an extra object for every entry put in to the map, and it
+ * also tries to control the growth of the size of these arrays more aggressively
+ * (since growing them only requires copying the entries in the array, not rebuilding
+ * a hash map).
+ *
+ * <p>If you don't need the standard Java container APIs provided here (iterators etc),
+ * consider using {@link SimpleArrayMap} instead.</p>
+ *
+ * <p>Note that this implementation is not intended to be appropriate for data structures
+ * that may contain large numbers of items.  It is generally slower than a traditional
+ * HashMap, since lookups require a binary search and adds and removes require inserting
+ * and deleting entries in the array.  For containers holding up to hundreds of items,
+ * the performance difference is not significant, less than 50%.</p>
+ *
+ * <p>Because this container is intended to better balance memory use, unlike most other
+ * standard Java containers it will shrink its array as items are removed from it.  Currently
+ * you have no control over this shrinking -- if you set a capacity and then remove an
+ * item, it may reduce the capacity to better match the current size.  In the future an
+ * explicit call to set the capacity should turn off this aggressive shrinking behavior.</p>
+ */
 public class ArrayMap<K, V> extends SimpleArrayMap<K, V> implements Map<K, V> {
     MapCollections<K, V> mCollections;
 

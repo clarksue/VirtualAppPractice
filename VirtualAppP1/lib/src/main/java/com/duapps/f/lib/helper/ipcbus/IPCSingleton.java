@@ -1,6 +1,10 @@
 package com.duapps.f.lib.helper.ipcbus;
 
+/**
+ * @author Lody
+ */
 public class IPCSingleton<T> {
+
     private Class<?> ipcClass;
     private T instance;
 
@@ -18,4 +22,5 @@ public class IPCSingleton<T> {
         }
         return instance;
     }
+
 }

@@ -12,12 +12,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/**
+ * @author Lody
+ */
 public class IPCMethod {
+
     private int code;
     private Method method;
     private String interfaceName;
     private MethodParamConverter[] converters;
     private MethodParamConverter resultConverter;
+
 
     public IPCMethod(int code, Method method, String interfaceName) {
         this.code = code;
@@ -39,6 +44,7 @@ public class IPCMethod {
     private boolean isAidlParam(Class<?> type) {
         return type.isInterface() && IInterface.class.isAssignableFrom(type);
     }
+
 
     public String getInterfaceName() {
         return interfaceName;
@@ -164,4 +170,5 @@ public class IPCMethod {
             return null;
         }
     }
+
 }

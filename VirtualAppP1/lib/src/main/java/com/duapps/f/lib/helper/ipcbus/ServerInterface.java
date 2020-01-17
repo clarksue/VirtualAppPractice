@@ -8,7 +8,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Lody
+ */
 public class ServerInterface {
+
     private Class<?> interfaceClass;
     private final SparseArray<IPCMethod> codeToInterfaceMethod;
     private final Map<Method, IPCMethod> methodToIPCMethodMap;

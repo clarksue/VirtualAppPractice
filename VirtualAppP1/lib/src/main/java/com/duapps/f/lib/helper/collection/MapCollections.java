@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.duapps.f.lib.helper.collection;
 
 import java.lang.reflect.Array;
@@ -11,7 +27,7 @@ import java.util.Set;
  * structure like {@link ArrayMap}.
  * @hide
  */
-public abstract class MapCollections<K, V> {
+abstract class MapCollections<K, V> {
     EntrySet mEntrySet;
     KeySet mKeySet;
     ValuesCollection mValues;
@@ -35,7 +51,7 @@ public abstract class MapCollections<K, V> {
         return oldSize != map.size();
     }
 
-    public static <K, V> boolean retainAllHelper(Map<K, V> map, Collection<?> collection) {
+        public static <K, V> boolean retainAllHelper(Map<K, V> map, Collection<?> collection) {
         int oldSize = map.size();
         Iterator<K> it = map.keySet().iterator();
         while (it.hasNext()) {
@@ -46,7 +62,7 @@ public abstract class MapCollections<K, V> {
         return oldSize != map.size();
     };
 
-    public static <T> boolean equalsSetHelper(Set<T> set, Object object) {
+        public static <T> boolean equalsSetHelper(Set<T> set, Object object) {
         if (set == object) {
             return true;
         }
@@ -64,7 +80,7 @@ public abstract class MapCollections<K, V> {
         return false;
     };
 
-    public Object[] toArrayHelper(int offset) {
+        public Object[] toArrayHelper(int offset) {
         final int N = colGetSize();
         Object[] result = new Object[N];
         for (int i=0; i<N; i++) {
@@ -77,7 +93,7 @@ public abstract class MapCollections<K, V> {
         final int N  = colGetSize();
         if (array.length < N) {
             @SuppressWarnings("unchecked") T[] newArray
-                    = (T[]) Array.newInstance(array.getClass().getComponentType(), N);
+                = (T[]) Array.newInstance(array.getClass().getComponentType(), N);
             array = newArray;
         }
         for (int i=0; i<N; i++) {
@@ -256,7 +272,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    final class EntrySet implements Set<Map.Entry<K, V>> {
+final class EntrySet implements Set<Map.Entry<K, V>> {
         @Override
         public boolean add(Map.Entry<K, V> object) {
             throw new UnsupportedOperationException();
@@ -358,7 +374,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    final class KeySet implements Set<K> {
+final class KeySet implements Set<K> {
 
         @Override
         public boolean add(K object) {
@@ -446,7 +462,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    final class ValuesCollection implements Collection<V> {
+final class ValuesCollection implements Collection<V> {
 
         @Override
         public boolean add(V object) {

@@ -12,6 +12,11 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 一个拥有流畅特性(Fluent-API)的反射工具类, 使用起来就像直接调用一样流畅易懂.
+ *
+ * @author Lody
+ */
 public class Reflect {
 
     private final Object object;
@@ -471,7 +476,7 @@ public class Reflect {
     public <P> P as(Class<P> proxyType) {
         final boolean isMap = (object instanceof Map);
         final InvocationHandler handler = new InvocationHandler() {
-
+            
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 String name = method.getName();
                 try {

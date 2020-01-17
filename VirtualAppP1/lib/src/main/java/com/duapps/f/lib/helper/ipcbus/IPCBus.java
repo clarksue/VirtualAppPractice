@@ -1,11 +1,17 @@
 package com.duapps.f.lib.helper.ipcbus;
 
+
 import android.os.IBinder;
 
 import java.lang.reflect.Proxy;
 
+/**
+ * @author Lody
+ */
 public class IPCBus {
+
     private static IServerCache sCache;
+
     public static void initialize(IServerCache cache) {
         sCache = cache;
     }

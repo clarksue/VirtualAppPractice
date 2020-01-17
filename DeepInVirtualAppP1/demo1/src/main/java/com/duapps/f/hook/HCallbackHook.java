@@ -47,7 +47,6 @@ public class HCallbackHook implements Handler.Callback, Injectable {
 
     @Override
     public void inject() throws Throwable {
-
     }
 
     @Override

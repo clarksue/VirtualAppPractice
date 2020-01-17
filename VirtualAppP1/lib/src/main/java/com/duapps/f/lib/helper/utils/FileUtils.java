@@ -23,6 +23,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author Lody
+ */
 public class FileUtils {
     /**
      * @param path

@@ -9,7 +9,12 @@ import com.duapps.f.lib.client.ipc.VActivityManager;
 
 import java.net.URISyntaxException;
 
+/**
+ * @author Lody
+ */
 public class ShortcutHandleActivity extends Activity {
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,5 +61,7 @@ public class ShortcutHandleActivity extends Activity {
             splashIntent.putExtra(Intent.EXTRA_CC, userId);
             startActivity(splashIntent);
         }
+
     }
+
 }

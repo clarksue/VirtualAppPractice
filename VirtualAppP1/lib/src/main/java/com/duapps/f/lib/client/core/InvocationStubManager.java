@@ -1,82 +1,218 @@
 package com.duapps.f.lib.client.core;
 
+import android.os.Build;
+
 import com.duapps.f.lib.client.hook.base.MethodInvocationProxy;
 import com.duapps.f.lib.client.hook.base.MethodInvocationStub;
 import com.duapps.f.lib.client.hook.delegate.AppInstrumentation;
+import com.duapps.f.lib.client.hook.proxies.account.AccountManagerStub;
+import com.duapps.f.lib.client.hook.proxies.alarm.AlarmManagerStub;
+import com.duapps.f.lib.client.hook.proxies.am.ActivityManagerStub;
+import com.duapps.f.lib.client.hook.proxies.am.HCallbackStub;
+import com.duapps.f.lib.client.hook.proxies.appops.AppOpsManagerStub;
+import com.duapps.f.lib.client.hook.proxies.appwidget.AppWidgetManagerStub;
+import com.duapps.f.lib.client.hook.proxies.audio.AudioManagerStub;
+import com.duapps.f.lib.client.hook.proxies.backup.BackupManagerStub;
+import com.duapps.f.lib.client.hook.proxies.bluetooth.BluetoothStub;
+import com.duapps.f.lib.client.hook.proxies.clipboard.ClipBoardStub;
+import com.duapps.f.lib.client.hook.proxies.connectivity.ConnectivityStub;
+import com.duapps.f.lib.client.hook.proxies.content.ContentServiceStub;
+import com.duapps.f.lib.client.hook.proxies.context_hub.ContextHubServiceStub;
+import com.duapps.f.lib.client.hook.proxies.devicepolicy.DevicePolicyManagerStub;
+import com.duapps.f.lib.client.hook.proxies.display.DisplayStub;
+import com.duapps.f.lib.client.hook.proxies.dropbox.DropBoxManagerStub;
+import com.duapps.f.lib.client.hook.proxies.fingerprint.FingerprintManagerStub;
+import com.duapps.f.lib.client.hook.proxies.graphics.GraphicsStatsStub;
+import com.duapps.f.lib.client.hook.proxies.imms.MmsStub;
+import com.duapps.f.lib.client.hook.proxies.input.InputMethodManagerStub;
+import com.duapps.f.lib.client.hook.proxies.isms.ISmsStub;
+import com.duapps.f.lib.client.hook.proxies.isub.ISubStub;
+import com.duapps.f.lib.client.hook.proxies.job.JobServiceStub;
+import com.duapps.f.lib.client.hook.proxies.libcore.LibCoreStub;
+import com.duapps.f.lib.client.hook.proxies.location.LocationManagerStub;
+import com.duapps.f.lib.client.hook.proxies.media.router.MediaRouterServiceStub;
+import com.duapps.f.lib.client.hook.proxies.media.session.SessionManagerStub;
+import com.duapps.f.lib.client.hook.proxies.mount.MountServiceStub;
+import com.duapps.f.lib.client.hook.proxies.network.NetworkManagementStub;
+import com.duapps.f.lib.client.hook.proxies.notification.NotificationManagerStub;
+import com.duapps.f.lib.client.hook.proxies.persistent_data_block.PersistentDataBlockServiceStub;
+import com.duapps.f.lib.client.hook.proxies.phonesubinfo.PhoneSubInfoStub;
+import com.duapps.f.lib.client.hook.proxies.pm.PackageManagerStub;
+import com.duapps.f.lib.client.hook.proxies.power.PowerManagerStub;
+import com.duapps.f.lib.client.hook.proxies.restriction.RestrictionStub;
+import com.duapps.f.lib.client.hook.proxies.search.SearchManagerStub;
+import com.duapps.f.lib.client.hook.proxies.shortcut.ShortcutServiceStub;
+import com.duapps.f.lib.client.hook.proxies.telephony.TelephonyRegistryStub;
+import com.duapps.f.lib.client.hook.proxies.telephony.TelephonyStub;
+import com.duapps.f.lib.client.hook.proxies.usage.UsageStatsManagerStub;
+import com.duapps.f.lib.client.hook.proxies.user.UserManagerStub;
+import com.duapps.f.lib.client.hook.proxies.vibrator.VibratorStub;
+import com.duapps.f.lib.client.hook.proxies.view.AutoFillManagerStub;
+import com.duapps.f.lib.client.hook.proxies.wifi.WifiManagerStub;
+import com.duapps.f.lib.client.hook.proxies.wifi_scanner.WifiScannerStub;
+import com.duapps.f.lib.client.hook.proxies.window.WindowManagerStub;
 import com.duapps.f.lib.client.interfaces.IInjector;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
+import static android.os.Build.VERSION_CODES.M;
+import static android.os.Build.VERSION_CODES.N;
+
+/**
+ * @author Lody
+ *
+ */
 public final class InvocationStubManager {
+
     private static InvocationStubManager sInstance = new InvocationStubManager();
     private static boolean sInit;
 
-    private Map<Class<?>, IInjector> mInjectors = new HashMap<>(13);
+	private Map<Class<?>, IInjector> mInjectors = new HashMap<>(13);
 
-    private InvocationStubManager() {
-    }
+	private InvocationStubManager() {
+	}
 
-    public static InvocationStubManager getInstance() {
-        return sInstance;
-    }
+	public static InvocationStubManager getInstance() {
+		return sInstance;
+	}
 
-    void injectAll() throws Throwable {
-        for (IInjector injector : mInjectors.values()) {
-            injector.inject();
-        }
-        // XXX: Lazy inject the Instrumentation,
-        addInjector(AppInstrumentation.getDefault());
-    }
+	void injectAll() throws Throwable {
+		for (IInjector injector : mInjectors.values()) {
+			injector.inject();
+		}
+		// XXX: Lazy inject the Instrumentation,
+		addInjector(AppInstrumentation.getDefault());
+	}
 
     /**
-     * @return if the InvocationStubManager has been initialized.
-     */
-    public boolean isInit() {
-        return sInit;
-    }
+	 * @return if the InvocationStubManager has been initialized.
+	 */
+	public boolean isInit() {
+		return sInit;
+	}
 
-    public void init() throws Throwable {
-        if (isInit()) {
-            throw new IllegalStateException("InvocationStubManager Has been initialized.");
-        }
-        injectInternal();
-        sInit = true;
 
-    }
+	public void init() throws Throwable {
+		if (isInit()) {
+			throw new IllegalStateException("InvocationStubManager Has been initialized.");
+		}
+		injectInternal();
+		sInit = true;
 
-    private void injectInternal() throws Throwable {
-        if (VirtualCore.get().isMainProcess()) {
-            return;
-        }
-    }
+	}
 
-    private void addInjector(IInjector IInjector) {
-        mInjectors.put(IInjector.getClass(), IInjector);
-    }
+	private void injectInternal() throws Throwable {
+		if (VirtualCore.get().isMainProcess()) {
+			return;
+		}
+		if (VirtualCore.get().isServerProcess()) {
+			addInjector(new ActivityManagerStub());
+			addInjector(new PackageManagerStub());
+			return;
+		}
+		if (VirtualCore.get().isVAppProcess()) {
+			addInjector(new LibCoreStub());
+			addInjector(new ActivityManagerStub());
+			addInjector(new PackageManagerStub());
+			addInjector(HCallbackStub.getDefault());
+			addInjector(new ISmsStub());
+			addInjector(new ISubStub());
+			addInjector(new DropBoxManagerStub());
+			addInjector(new NotificationManagerStub());
+			addInjector(new LocationManagerStub());
+			addInjector(new WindowManagerStub());
+			addInjector(new ClipBoardStub());
+			addInjector(new MountServiceStub());
+			addInjector(new BackupManagerStub());
+			addInjector(new TelephonyStub());
+			addInjector(new TelephonyRegistryStub());
+			addInjector(new PhoneSubInfoStub());
+			addInjector(new PowerManagerStub());
+			addInjector(new AppWidgetManagerStub());
+			addInjector(new AccountManagerStub());
+			addInjector(new AudioManagerStub());
+			addInjector(new SearchManagerStub());
+			addInjector(new ContentServiceStub());
+			addInjector(new ConnectivityStub());
 
-    public <T extends IInjector> T findInjector(Class<T> clazz) {
-        // noinspection unchecked
-        return (T) mInjectors.get(clazz);
-    }
+			if (Build.VERSION.SDK_INT >= JELLY_BEAN_MR2) {
+				addInjector(new VibratorStub());
+				addInjector(new WifiManagerStub());
+				addInjector(new BluetoothStub());
+				addInjector(new ContextHubServiceStub());
+			}
+			if (Build.VERSION.SDK_INT >= JELLY_BEAN_MR1) {
+				addInjector(new UserManagerStub());
+			}
 
-    public <T extends IInjector> void checkEnv(Class<T> clazz) {
-        IInjector IInjector = findInjector(clazz);
-        if (IInjector != null && IInjector.isEnvBad()) {
-            try {
-                IInjector.inject();
-            } catch (Throwable e) {
-                e.printStackTrace();
+			if (Build.VERSION.SDK_INT >= JELLY_BEAN_MR1) {
+				addInjector(new DisplayStub());
+			}
+			if (Build.VERSION.SDK_INT >= LOLLIPOP) {
+				addInjector(new PersistentDataBlockServiceStub());
+				addInjector(new InputMethodManagerStub());
+				addInjector(new MmsStub());
+				addInjector(new SessionManagerStub());
+				addInjector(new JobServiceStub());
+				addInjector(new RestrictionStub());
+			}
+			if (Build.VERSION.SDK_INT >= KITKAT) {
+				addInjector(new AlarmManagerStub());
+				addInjector(new AppOpsManagerStub());
+				addInjector(new MediaRouterServiceStub());
+			}
+			if (Build.VERSION.SDK_INT >= LOLLIPOP_MR1) {
+				addInjector(new GraphicsStatsStub());
+				addInjector(new UsageStatsManagerStub());
+			}
+			if (Build.VERSION.SDK_INT >= M) {
+				addInjector(new FingerprintManagerStub());
+				addInjector(new NetworkManagementStub());
+			}
+			if (Build.VERSION.SDK_INT >= N) {
+                addInjector(new WifiScannerStub());
+                addInjector(new ShortcutServiceStub());
+                addInjector(new DevicePolicyManagerStub());
             }
-        }
-    }
+            if (Build.VERSION.SDK_INT >= 26) {
+				addInjector(new AutoFillManagerStub());
+			}
+		}
+	}
 
-    public <T extends IInjector, H extends MethodInvocationStub> H getInvocationStub(Class<T> injectorClass) {
-        T injector = findInjector(injectorClass);
-        if (injector != null && injector instanceof MethodInvocationProxy) {
-            // noinspection unchecked
-            return (H) ((MethodInvocationProxy) injector).getInvocationStub();
-        }
-        return null;
-    }
+	private void addInjector(IInjector IInjector) {
+		mInjectors.put(IInjector.getClass(), IInjector);
+	}
+
+	public <T extends IInjector> T findInjector(Class<T> clazz) {
+		// noinspection unchecked
+		return (T) mInjectors.get(clazz);
+	}
+
+	public <T extends IInjector> void checkEnv(Class<T> clazz) {
+		IInjector IInjector = findInjector(clazz);
+		if (IInjector != null && IInjector.isEnvBad()) {
+			try {
+				IInjector.inject();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public <T extends IInjector, H extends MethodInvocationStub> H getInvocationStub(Class<T> injectorClass) {
+		T injector = findInjector(injectorClass);
+		if (injector != null && injector instanceof MethodInvocationProxy) {
+			// noinspection unchecked
+			return (H) ((MethodInvocationProxy) injector).getInvocationStub();
+		}
+		return null;
+	}
+
 }

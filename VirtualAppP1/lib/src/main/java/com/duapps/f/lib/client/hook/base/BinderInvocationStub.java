@@ -7,8 +7,6 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.os.ResultReceiver;
-import android.os.ShellCallback;
 import android.util.Log;
 
 import com.duapps.f.lib.client.core.VirtualCore;
@@ -105,11 +103,6 @@ public class BinderInvocationStub extends MethodInvocationStub<IInterface> imple
     @Override
     public IInterface queryLocalInterface(String descriptor) {
         return getProxyInterface();
-    }
-
-    @Override
-    public synchronized void shellCommand(FileDescriptor in, FileDescriptor out, FileDescriptor err, String[] args, ShellCallback shellCallback, ResultReceiver resultReceiver) throws RemoteException {
-
     }
 
     @Override

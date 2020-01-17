@@ -10,6 +10,10 @@ import com.duapps.f.lib.server.interfaces.IJobService;
 
 import java.util.List;
 
+/**
+ * @author Lody
+ */
+
 public class VJobScheduler {
 
     private static final VJobScheduler sInstance = new VJobScheduler();

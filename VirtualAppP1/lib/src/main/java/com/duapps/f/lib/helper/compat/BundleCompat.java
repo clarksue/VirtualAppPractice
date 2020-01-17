@@ -8,6 +8,9 @@ import android.os.Parcel;
 import mirror.android.os.BaseBundle;
 import mirror.android.os.BundleICS;
 
+/**
+ * @author Lody
+ */
 public class BundleCompat {
     public static IBinder getBinder(Bundle bundle, String key) {
         if (Build.VERSION.SDK_INT >= 18) {

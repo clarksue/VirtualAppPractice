@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.IPackageInstaller;
 import android.content.pm.PackageInfo;
 import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
@@ -15,10 +14,14 @@ import android.os.RemoteException;
 
 import com.duapps.f.lib.client.env.VirtualRuntime;
 import com.duapps.f.lib.helper.ipcbus.IPCSingleton;
+import com.duapps.f.lib.server.IPackageInstaller;
 import com.duapps.f.lib.server.interfaces.IPackageManager;
 
 import java.util.List;
 
+/**
+ * @author Lody
+ */
 public class VPackageManager {
 
     private static final VPackageManager sMgr = new VPackageManager();

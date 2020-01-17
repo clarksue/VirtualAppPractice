@@ -2,14 +2,18 @@ package com.duapps.f.lib.client.stub;
 
 import java.util.Locale;
 
+/**
+ * @author Lody
+ */
+
 public class VASettings {
     public static final String STUB_DEF_AUTHORITY = "virtual_stub_";
-    public static final String ACTION_BADGER_CHANGE = "com.lody.virtual.BADGER_CHANGE";
+    public static final String ACTION_BADGER_CHANGE = "com.duapps.f.lib.BADGER_CHANGE";
     public static String STUB_ACTIVITY = StubActivity.class.getName();
-//    public static String STUB_DIALOG = StubDialog.class.getName();
-//    public static String STUB_CP = StubContentProvider.class.getName();
+    public static String STUB_DIALOG = StubDialog.class.getName();
+    public static String STUB_CP = StubContentProvider.class.getName();
     public static String STUB_JOB = StubJob.class.getName();
-//    public static String RESOLVER_ACTIVITY = ResolverActivity.class.getName();
+    public static String RESOLVER_ACTIVITY = ResolverActivity.class.getName();
     public static String STUB_CP_AUTHORITY = "virtual_stub_";
     public static int STUB_COUNT = 50;
     public static String[] PRIVILEGE_APPS = new String[]{
@@ -44,13 +48,13 @@ public class VASettings {
         return String.format(Locale.ENGLISH, "%s$C%d", STUB_ACTIVITY, index);
     }
 
-//    public static String getStubDialogName(int index) {
-//        return String.format(Locale.ENGLISH, "%s$C%d", STUB_DIALOG, index);
-//    }
-//
-//    public static String getStubCP(int index) {
-//        return String.format(Locale.ENGLISH, "%s$C%d", STUB_CP, index);
-//    }
+    public static String getStubDialogName(int index) {
+        return String.format(Locale.ENGLISH, "%s$C%d", STUB_DIALOG, index);
+    }
+
+    public static String getStubCP(int index) {
+        return String.format(Locale.ENGLISH, "%s$C%d", STUB_CP, index);
+    }
 
     public static String getStubAuthority(int index) {
         return String.format(Locale.ENGLISH, "%s%d", STUB_CP_AUTHORITY, index);
@@ -66,4 +70,5 @@ public class VASettings {
         public static String MAC = DEFAULT_MAC;
         public static String SSID = DEFAULT_SSID;
     }
+
 }
